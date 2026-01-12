@@ -2,8 +2,15 @@
 """
 Setup NocoDB tables for Storyception
 Run this once to create all required tables
+
+Tables already created with IDs:
+- Storyception Sessions: m1icipflxgrce6y
+- Storyception Beats: ms4mo8ekjtrqz48
+- Storyception Branches: mypczrrly1k8gsi
+- Storyception Keyframes: m301ac822mwqpy0
 """
 
+import os
 import json
 import requests
 from pathlib import Path
@@ -11,7 +18,7 @@ from pathlib import Path
 # NocoDB Configuration
 NOCODB_BASE_URL = "https://nocodb.v1su4.com"
 NOCODB_BASE_ID = "pce7ccvwdlz09bx"
-NOCODB_API_TOKEN = "XqDin8FMBdUPBb_ZqFKoQ_zwR3rEC28O44DnbjKO"
+NOCODB_API_TOKEN = os.getenv("NOCODB_API_TOKEN", "")
 
 # API Endpoint
 API_URL = f"{NOCODB_BASE_URL}/api/v2/meta/bases/{NOCODB_BASE_ID}/tables"
