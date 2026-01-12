@@ -10,6 +10,17 @@ export interface StoryBeat {
   selectedBranchId?: number
   branches?: BranchOption[]
   connectedFromBranch?: string
+  
+  // New fields for enhanced functionality
+  frames?: string[]              // 9 image URLs for grid display
+  branchWeight?: number          // 0.0-1.0 branching likelihood
+  isLoopable?: boolean           // Can explore multiple times (Fun & Games, etc.)
+  visitedScenes?: string[]       // For loopable beats - track explored scenes
+  isConvergence?: boolean        // Fixer point where branches converge
+  branchDepth?: number           // 0-4, how deep in branching
+  status?: 'hidden' | 'current' | 'completed'  // Progressive reveal state
+  visualPrompt?: string          // Prompt used for Nano Banana generation
+  scriptText?: string            // AI-generated narrative text
 }
 
 export interface TimelineClip {
@@ -38,6 +49,11 @@ export interface BranchOption {
   selected: boolean
   generatedIdea?: string
   imagePrompt?: string
+  
+  // New fields for enhanced functionality
+  locked?: boolean               // After selection, all branches get locked
+  frames?: string[]              // 9 thumbnail frames for preview
+  thumbnailUrl?: string          // Single thumbnail for branch preview
 }
 
 export interface BeatStructure {
@@ -51,3 +67,40 @@ export interface StoryHistory {
   timestamp: number
   action: string
 }
+
+// New types for story state management
+export interface StoryState {
+  storyId: string
+  currentBeatId: number
+  completedBeatIds: number[]
+  selectedBranches: Record<number, number>  // beatId -> branchId
+  branchDepth: number
+  totalBeats: number
+}
+
+export interface GenerateStoryRequest {
+  archetype: string
+  outcome: string
+  images: Array<{ data: string; mimeType: string }>
+}
+
+export interface GenerateStoryResponse {
+  storyId: string
+  firstBeat: StoryBeat
+  totalBeats: number
+}
+
+export interface SelectBranchRequest {
+  storyId: string
+  currentBeatId: number
+  selectedBranchId: number
+  nextBeatId: number
+}
+
+export interface SelectBranchResponse {
+  success: boolean
+  nextBeat: StoryBeat
+  fromCache: boolean
+}
+
+export type LayoutDirection = "horizontal" | "vertical" | "free"

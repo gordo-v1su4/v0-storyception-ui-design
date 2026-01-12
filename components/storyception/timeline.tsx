@@ -172,9 +172,13 @@ export function Timeline({
             const isSelected = beat.id === selectedBeatId
             const abbrev = getBeatAbbreviation(beat.label)
             const widthPercent = beat.percentOfTotal || 10
-            // Scale width based on percentage - minimum 50px, scaled by zoom
-            const baseWidth = 40
-            const scaledWidth = Math.max(baseWidth, widthPercent * 1.5 * (zoom / 50))
+            
+            // Scale width proportionally to beat duration
+            // Min width 28px for 1% beats, scales up to ~180px for 20% beats at default zoom
+            const minWidth = 28
+            const maxMultiplier = 8  // 20% * 8 = 160px base
+            const zoomFactor = zoom / 60
+            const scaledWidth = Math.max(minWidth, widthPercent * maxMultiplier * zoomFactor)
 
             return (
               <motion.button

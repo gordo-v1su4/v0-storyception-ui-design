@@ -3,8 +3,9 @@
 import { useState, useCallback, useEffect } from "react"
 import { AnimatePresence } from "framer-motion"
 import { Header } from "@/components/storyception/header"
-import { SetupModal } from "@/components/storyception/setup-modal"
+import { SetupPanel } from "@/components/storyception/setup-panel"
 import { StoryCanvas } from "@/components/storyception/story-canvas"
+import { FlowCanvas } from "@/components/storyception/flow-canvas"
 import { Timeline } from "@/components/storyception/timeline"
 import type { StoryBeat, StoryHistory } from "@/lib/types"
 
@@ -13,6 +14,7 @@ export default function StoryceptionPage() {
   const [showModal, setShowModal] = useState(true)
   const [selectedBeatId, setSelectedBeatId] = useState<number | null>(null)
   const [history, setHistory] = useState<StoryHistory[]>([])
+  const [viewMode, setViewMode] = useState<"flow" | "cards">("flow") // Toggle between views
 
   const [currentBeatIndex, setCurrentBeatIndex] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -85,17 +87,26 @@ export default function StoryceptionPage() {
   return (
     <div className="h-screen w-screen flex flex-col bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
       <AnimatePresence>
-        {showModal && <SetupModal onClose={() => setShowModal(false)} onGenerate={handleGenerate} />}
+        {showModal && <SetupPanel onClose={() => setShowModal(false)} onGenerate={handleGenerate} />}
       </AnimatePresence>
 
-      <Header onNewStory={() => setShowModal(true)} />
+      <Header onNewStory={() => setShowModal(true)} viewMode={viewMode} onToggleView={() => setViewMode(v => v === "flow" ? "cards" : "flow")} />
 
-      <StoryCanvas
-        beats={storyBeats}
-        selectedBeatId={selectedBeatId}
-        onSelectBeat={handleSelectBeat}
-        onUpdateBeat={handleUpdateBeat}
-      />
+      {viewMode === "flow" ? (
+        <FlowCanvas
+          beats={storyBeats}
+          selectedBeatId={selectedBeatId}
+          onSelectBeat={handleSelectBeat}
+          onUpdateBeat={handleUpdateBeat}
+        />
+      ) : (
+        <StoryCanvas
+          beats={storyBeats}
+          selectedBeatId={selectedBeatId}
+          onSelectBeat={handleSelectBeat}
+          onUpdateBeat={handleUpdateBeat}
+        />
+      )}
 
       <Timeline
         beats={storyBeats}
